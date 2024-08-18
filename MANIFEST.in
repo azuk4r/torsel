@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include setup.py
+
+recursive-include torsel *.py
+
+prune examples
