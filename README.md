@@ -17,7 +17,7 @@ pip install torsel
 
 ## Usage
 For detailed examples on how to use Torsel, please refer to the examples directory. These examples demonstrate how to:
-* Verify Tor IP rotation as an example mode of operation:<br>https://github.com/azuk4r/torsel/examples/verify_tor_ip_rotation.py
+* Verify Tor IP rotation as an example mode of operation:<br>https://github.com/azuk4r/torsel/blob/main/examples/verify_tor_ip_rotation.py
   
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
@@ -37,4 +37,4 @@ Torsel is highly configurable to suit various use cases:
 Contributions are welcome! If you have suggestions or improvements, please feel free to submit a pull request or open an issue on GitHub.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.
