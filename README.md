@@ -21,7 +21,7 @@ For detailed examples on how to use Torsel, please refer to the examples directo
   
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
-* **total_instances**: Number of or instances to create.
+* **total_instances**: Number of instances to create.
 * **max_threads**: Maximum number of concurrent threads.
 * **tor_base_port**: Starting port for Tor SOCKS connections.
 * **tor_control_base_port:** Starting port for Tor control connections.
