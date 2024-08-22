@@ -18,6 +18,7 @@ pip install torsel
 ## Usage
 For detailed examples on how to use Torsel, please refer to the examples directory. These examples demonstrate how to:
 * Verify Tor IP rotation as an example mode of operation:<br>https://github.com/azuk4r/torsel/blob/main/examples/verify_tor_ip_rotation.py
+* As an exercise, I have analyzed the number of available IPs:<br>https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py
   
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
