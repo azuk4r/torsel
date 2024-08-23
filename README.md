@@ -15,10 +15,38 @@ You can install Torsel directly from PyPI:
 pip install torsel
 ```
 
+## Prerequisites
+
+Ensure your machine has the required packages installed by running the following command:
+```
+sudo apt install tor chromium psmisc
+```
+
+This command installs **Tor**, **Chromium**, and **psmisc** (required for the `killall` command).
+
 ## Usage
-For detailed examples on how to use Torsel, please refer to the examples directory. These examples demonstrate how to:
-* Verify Tor IP rotation as an example mode of operation:<br>https://github.com/azuk4r/torsel/blob/main/examples/verify_tor_ip_rotation.py
-* As an exercise, I have analyzed the number of available IPs:<br>https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py
+
+### Simple example
+This simple example scrapes the IP address 10 times, demonstrating IP rotation using Tor:
+```
+from torsel import Torsel
+
+def collect_ip(driver, wait, EC, By):
+    driver.get("http://icanhazip.com")
+    wait.until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), "."))
+    ip_address = driver.find_element(By.TAG_NAME, "body").text.strip()
+    print(f"[+] Current Tor IP: {ip_address}")
+
+torsel = Torsel(headless=True)
+torsel.run(10, collect_ip)
+```
+
+For detailed examples on how to use Torsel, please refer to the [examples directory](https://github.com/azuk4r/torsel/tree/main/examples).
+
+### List of examples:
+* [Detailed explanation of the simple example](https://github.com/azuk4r/torsel/blob/main/examples/simple_example.py)
+* [Verify Tor IP rotation as a multithreading example of operation mode](https://github.com/azuk4r/torsel/blob/main/examples/verify_tor_ip_rotation.py)
+* [As an exercise, I have analyzed the number of available IP](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
   
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
@@ -30,7 +58,7 @@ Torsel is highly configurable to suit various use cases:
 * **verbose:** Enable detailed logging.
 
 ## System Requirements
-* **Operating System:** Kali Linux (Development and testing conducted on Kali Linux, but it may work on other Linux distributions).
+* **Operating System:** Development and testing conducted on WSL Kali Linux, but it may work on other Linux distributions.
 * **Python Version:** Python 3.8 or higher.
 * **Dependencies:** Selenium, Stem (for managing Tor).
 

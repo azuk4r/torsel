@@ -1,15 +1,18 @@
 import os
-import subprocess
 import time
 import socket
+import shutil
+import threading
+import subprocess
+from queue import Queue
+from stem import Signal
+from stem.control import Controller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from stem import Signal
-from stem.control import Controller
-import threading
-import shutil
-from queue import Queue
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 class Torsel:
     """
@@ -19,7 +22,7 @@ class Torsel:
     as well as configure Selenium WebDriver to use these instances for web automation.
     """
 
-    def __init__(self, total_instances=10, max_threads=5, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=True, verbose=True):
+    def __init__(self, total_instances=1, max_threads=1, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=False, verbose=False):
         """
         Initializes the Torsel object with the given parameters.
 
@@ -105,7 +108,7 @@ DataDirectory {instance_dir}
             instance_num (int): The index of the Tor instance.
 
         Returns:
-            WebDriver: Configured Selenium WebDriver instance.
+            WebDriver, WebDriverWait, By, EC: Configured Selenium WebDriver instance and related utilities.
         """
         chrome_options = Options()
         if self.headless:
@@ -116,7 +119,9 @@ DataDirectory {instance_dir}
 
         service = Service()
         driver = webdriver.Chrome(service=service, options=chrome_options)
-        return driver
+
+        wait = WebDriverWait(driver, 10)
+        return driver, wait, By, EC
 
     def rotate_tor_ip(self, instance_num):
         """
@@ -158,8 +163,31 @@ DataDirectory {instance_dir}
             instance_num (int): The index of the Tor instance.
             user_function (callable): The function to execute, provided by the user.
         """
-        driver = self.configure_selenium_with_tor(instance_num)
-        user_function(driver, action_num, instance_num, self.log)
+        driver, wait, By, EC = self.configure_selenium_with_tor(instance_num)
+
+        # Dynamically check and pass only the arguments that the function expects
+        args = {}
+        for name in user_function.__code__.co_varnames:
+            if name == "driver":
+                args["driver"] = driver
+            elif name == "wait":
+                args["wait"] = wait
+            elif name == "By":
+                args["By"] = By
+            elif name == "EC":
+                args["EC"] = EC
+            elif name == "action_num":
+                args["action_num"] = action_num
+            elif name == "instance_num":
+                args["instance_num"] = instance_num
+            elif name == "log":
+                args["log"] = self.log
+
+        try:
+            user_function(**args)
+        except TypeError as e:
+            self.log(f"[-] Function error: {e}")
+
         driver.quit()
 
     def thread_manager(self, queue, user_function, check_stop_func=None):
@@ -182,6 +210,10 @@ DataDirectory {instance_dir}
             for attempt in range(5):
                 try:
                     self.execute_function(action_num, instance_num, user_function)
+
+                    # Ensure the IP is rotated after each action in each instance
+                    self.rotate_tor_ip(instance_num)
+                    
                     break
                 except Exception as e:
                     self.log(f"[-] Action {action_num}, Instance {instance_num} - Exception: {e}. Rotating IP and retrying...")
