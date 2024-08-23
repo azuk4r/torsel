@@ -28,7 +28,7 @@ This command installs **Tor**, **Chromium**, and **psmisc** (required for the `k
 
 ### Simple example
 This simple example scrapes the IP address 10 times, demonstrating IP rotation using Tor:
-```
+```python
 from torsel import Torsel
 
 # Selenium function to invoke in the Torsel object
