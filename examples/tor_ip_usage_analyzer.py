@@ -72,3 +72,32 @@ torsel.run(
 
 # Print IP statistics after all actions are completed
 print_ip_statistics()
+
+# Results:
+# ...
+# IP Utilizada: 185.241.208.236 54 veces
+# IP Utilizada: 107.174.138.172 1 veces
+# IP Utilizada: 23.129.64.214 1 veces
+# IP Utilizada: 37.252.252.33 3 veces
+# IP Utilizada: 162.247.74.27 1 veces
+# IP Utilizada: 212.73.134.204 56 veces
+# IP Utilizada: 204.8.96.86 1 veces
+# IP Utilizada: 77.229.186.253 55 veces
+# IP Utilizada: 204.8.96.158 1 veces
+# IP Utilizada: 185.220.101.139 57 veces
+# IP Utilizada: 109.248.147.137 55 veces
+# IP Utilizada: 102.130.127.117 1 veces
+# IP Utilizada: 107.189.30.49 1 veces
+# IP Utilizada: 162.247.74.213 55 veces
+# IP Utilizada: 62.133.45.2 55 veces
+# IP Utilizada: 199.195.251.202 11 veces
+# IP Utilizada: 139.99.8.57 54 veces
+# IP Utilizada: 193.189.100.201 1 veces
+# IP Utilizada: 185.227.68.78 47 veces
+# IP Utilizada: 204.8.96.106 1 veces
+# IP Utilizada: 212.21.66.6 36 veces
+# IP Utilizada: 104.219.232.126 36 veces
+# IP Utilizada: 23.129.64.134 30 veces
+
+# Se han utilizado en total: 983 número de IPs.
+# No se han reutilizado: 61 número de IPs.
