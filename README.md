@@ -31,12 +31,14 @@ This simple example scrapes the IP address 10 times, demonstrating IP rotation u
 ```
 from torsel import Torsel
 
+# Selenium function to invoke in the Torsel object
 def collect_ip(driver, wait, EC, By):
     driver.get("http://icanhazip.com")
     wait.until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), "."))
     ip_address = driver.find_element(By.TAG_NAME, "body").text.strip()
     print(f"[+] Current Tor IP: {ip_address}")
 
+# Invoke Torsel in headless mode and run
 torsel = Torsel(headless=True)
 torsel.run(10, collect_ip)
 ```
@@ -56,6 +58,12 @@ Torsel is highly configurable to suit various use cases:
 * **tor_control_base_port:** Starting port for Tor control connections.
 * **headless:** Run Selenium in headless mode.
 * **verbose:** Enable detailed logging.
+
+Additionally, within the Selenium-related configurations, Torsel automatically handles the following:
+* **driver:** Managed by Torsel and passed automatically to your function. No need to instantiate or manage it yourself.
+* **wait:** An instance of WebDriverWait configured with a 10-second timeout, provided by Torsel.
+* **By:** The By module from Selenium, used for locating elements (e.g., by ID, class name).
+* **EC** (ExpectedConditions): The ExpectedConditions module from Selenium, used to define conditions like element visibility or text presence.
 
 ## System Requirements
 * **Operating System:** Development and testing conducted on WSL Kali Linux, but it may work on other Linux distributions.
