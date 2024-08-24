@@ -1,3 +1,5 @@
 setuptools
+wheel 
+twine
 selenium
 stem
