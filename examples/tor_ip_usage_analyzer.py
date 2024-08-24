@@ -78,7 +78,7 @@ torsel = Torsel(
 
 # Run the IP collection and tracking across multiple Tor instances
 torsel.run(
-    10000, #paratestearahora-no guardado aun                   # Number of actions to perform (10k IP retrievals)
+    10000,                    # Number of actions to perform (10k IP retrievals)
     collect_and_track_ip,     # Function to execute for each action
 )
 
