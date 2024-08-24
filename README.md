@@ -46,10 +46,10 @@ torsel.run(10, collect_ip)
 For detailed examples on how to use Torsel, please refer to the [examples directory](https://github.com/azuk4r/torsel/tree/main/examples).
 
 ### List of examples:
-* [Detailed explanation of the simple example](https://github.com/azuk4r/torsel/blob/main/examples/simple_example.py)
-* [Verify Tor IP rotation as a multithreading example of operation mode](https://github.com/azuk4r/torsel/blob/main/examples/verify_tor_ip_rotation.py)
-* [As an exercise, I have analyzed the number of available IP](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
-  
+* [Detailed simple example (Single thread IP rotation)](https://github.com/azuk4r/torsel/blob/main/examples/simple_ip_rotation.py)
+* [Verify Tor IP rotation with multithreading](https://github.com/azuk4r/torsel/blob/main/examples/multithread_ip_rotation.py)
+* [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
+
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
 * **total_instances**: Number of instances to create.
