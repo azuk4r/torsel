@@ -6,7 +6,8 @@
 - **Web Scraping and Automation**: Ideal for tasks that require anonymity.
 - **Easy Configuration**: Automatically sets up, configures, and manages Tor instances.
 - **Integration with Selenium**: Run your Selenium scripts with the added anonymity of Tor.
-
+- **Advanced Cookies Management**: Optionally sacrifice speed for enhanced anonymity by generating fresh cookies for each session, with future support for customizable cookie actions.
+  
 ## Cybersecurity Considerations
 - **Bypassing IP-Based Restrictions**: Torsel can help bypass some IP-based restrictions by rotating IP addresses through Tor nodes.
 - **Tor Exit Node Blocking**: Be aware that some websites actively block traffic from Tor exit nodes, which may limit the effectiveness of this approach.
@@ -52,7 +53,11 @@ For detailed examples on how to use Torsel, please refer to the [examples direct
 * [Detailed simple example (Single thread IP rotation)](https://github.com/azuk4r/torsel/blob/main/examples/simple_ip_rotation.py)
 * [Verify Tor IP rotation with multithreading](https://github.com/azuk4r/torsel/blob/main/examples/multithread_ip_rotation.py)
 * [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
-
+* [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
+* [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
+* [Generate fresh cookies for each session (Single thread example)](https://github.com/azuk4r/torsel/blob/main/examples/cookies_gen_simple_example.py)
+* [Generate fresh cookies for each session with multithreading](https://github.com/azuk4r/torsel/blob/main/examples/cookies_gen_multithread_example.py)
+  
 ### Advanced Configuration
 Torsel is highly configurable to suit various use cases:
 * **total_instances**: Number of instances to create.
