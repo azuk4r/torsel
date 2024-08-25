@@ -73,7 +73,7 @@ torsel = Torsel(
     total_instances=70,       # Number of Tor instances to create
     max_threads=15,           # Max concurrent threads allowed
     headless=True,            # Run Selenium in headless mode
-    verbose=False             # If set to True, detailed logs will be shown
+    verbose=True              # If set to True, detailed logs will be shown
 )
 
 # Run the IP collection and tracking across multiple Tor instances
