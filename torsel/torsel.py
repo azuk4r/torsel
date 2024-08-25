@@ -103,23 +103,34 @@ DataDirectory {instance_dir}
     def configure_selenium_with_tor(self, instance_num):
         """
         Configures Selenium WebDriver to use a Tor instance as a proxy.
-
+    
         Args:
             instance_num (int): The index of the Tor instance.
-
+    
         Returns:
             WebDriver, WebDriverWait, By, EC: Configured Selenium WebDriver instance and related utilities.
         """
+        user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36",  # Chrome on Windows
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",  # Firefox on Windows
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",  # Safari on macOS
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",  # Firefox on Ubuntu Linux
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",  # Chrome on Linux
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"  # Chrome on macOS
+        ]
+        
+        user_agent = random.choice(user_agents)
         chrome_options = Options()
+        chrome_options.add_argument(f"--user-agent={user_agent}")
         if self.headless:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument(f"--proxy-server=socks5://127.0.0.1:{self.tor_base_port + instance_num * 10}")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
-
+    
         service = Service()
         driver = webdriver.Chrome(service=service, options=chrome_options)
-
+    
         wait = WebDriverWait(driver, 10)
         return driver, wait, By, EC
 
