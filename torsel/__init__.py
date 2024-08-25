@@ -1,8 +1,9 @@
 """
-Torsel - A Python module for managing Tor instances with Selenium.
+Torsel - A Python module for managing Tor instances with Selenium, including optional cookie management.
 """
 
 from .torsel import Torsel
+from .cookies_manager import CookiesManager
 
-__all__ = ["Torsel"]
-__version__ = "0.2.1"
+__all__ = ["Torsel", "CookiesManager"]
+__version__ = "0.3.0"

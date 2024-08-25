@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="torsel",
-    version="0.2.1",
+    version="0.3.0",
     description="A Python module for managing Tor instances with Selenium",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
