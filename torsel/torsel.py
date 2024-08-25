@@ -2,6 +2,7 @@ import os
 import time
 import socket
 import shutil
+import random
 import threading
 import subprocess
 from queue import Queue
@@ -13,16 +14,18 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from cookies_manager import CookiesManager
 
 class Torsel:
     """
     Torsel: A Python module for managing Tor instances with Selenium.
 
     This class provides functionality to create, manage, and rotate multiple Tor instances,
-    as well as configure Selenium WebDriver to use these instances for web automation.
+    as well as configure Selenium WebDriver to use these instances for web automation. 
+    It also includes optional management of cookies across sessions for better anonymity.
     """
 
-    def __init__(self, total_instances=1, max_threads=1, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=False, verbose=False):
+    def __init__(self, total_instances=1, max_threads=1, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=False, verbose=False, cookies_manager=False, custom_cookies_path=None):
         """
         Initializes the Torsel object with the given parameters.
 
@@ -35,6 +38,8 @@ class Torsel:
             tor_data_dir (str): Directory to store Tor profiles.
             headless (bool): Run Selenium in headless mode if True.
             verbose (bool): If True, print logs to the console.
+            cookies_manager (bool): If True, manage cookies across sessions.
+            custom_cookies_path (str): Path to a custom cookies JSON file (optional).
         """
         self.total_instances = total_instances
         self.max_threads = max_threads
@@ -44,6 +49,9 @@ class Torsel:
         self.tor_data_dir = tor_data_dir
         self.headless = headless
         self.verbose = verbose
+        self.cookies_manager = cookies_manager
+        self.custom_cookies_path = custom_cookies_path
+        self.cookies_manager_obj = CookiesManager(verbose=verbose)
 
     def log(self, message):
         """
@@ -59,19 +67,21 @@ class Torsel:
         """
         Cleans up any previous Tor processes, files, and ports.
         Kills any running Tor processes, frees up occupied ports, and removes old Tor profile directories.
+        If cookies_manager is enabled, also cleans up old cookies.
         """
         self.log("[~] Cleaning up previous processes, files, and ports...")
         subprocess.call(['killall', 'tor'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(1)
-
         for port in range(self.tor_base_port, self.tor_base_port + self.total_instances * 10, 10):
             if self.is_port_open(port):
                 os.system(f"fuser -k {port}/tcp")
             if self.is_port_open(port + 101):
                 os.system(f"fuser -k {port + 101}/tcp")
-
         if os.path.exists(self.tor_data_dir):
             shutil.rmtree(self.tor_data_dir)
+
+        if self.cookies_manager:
+            self.cookies_manager_obj.clean_cookies()
 
         self.log("[+] Cleanup completed.")
         time.sleep(3)
@@ -86,7 +96,6 @@ class Torsel:
         self.log(f"[~] Creating Tor instance {instance_num}...")
         instance_dir = os.path.join(self.tor_data_dir, f"tor{instance_num}")
         os.makedirs(instance_dir, exist_ok=True)
-
         torrc_content = f'''
 SocksPort {self.tor_base_port + instance_num * 10}
 ControlPort {self.tor_control_base_port + instance_num * 10}
@@ -95,7 +104,6 @@ DataDirectory {instance_dir}
         torrc_path = os.path.join(instance_dir, "torrc")
         with open(torrc_path, 'w') as torrc_file:
             torrc_file.write(torrc_content)
-
         subprocess.Popen([self.tor_path, "-f", torrc_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(5)
         self.log(f"[+] Tor instance {instance_num} created and running.")
@@ -103,22 +111,21 @@ DataDirectory {instance_dir}
     def configure_selenium_with_tor(self, instance_num):
         """
         Configures Selenium WebDriver to use a Tor instance as a proxy.
-    
+
         Args:
             instance_num (int): The index of the Tor instance.
-    
+
         Returns:
             WebDriver, WebDriverWait, By, EC: Configured Selenium WebDriver instance and related utilities.
         """
         user_agents = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36",  # Chrome on Windows
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",  # Firefox on Windows
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",  # Safari on macOS
-            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",  # Firefox on Ubuntu Linux
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",  # Chrome on Linux
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"  # Chrome on macOS
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
         ]
-        
         user_agent = random.choice(user_agents)
         chrome_options = Options()
         chrome_options.add_argument(f"--user-agent={user_agent}")
@@ -127,10 +134,8 @@ DataDirectory {instance_dir}
         chrome_options.add_argument(f"--proxy-server=socks5://127.0.0.1:{self.tor_base_port + instance_num * 10}")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
-    
         service = Service()
         driver = webdriver.Chrome(service=service, options=chrome_options)
-    
         wait = WebDriverWait(driver, 10)
         return driver, wait, By, EC
 
@@ -175,8 +180,11 @@ DataDirectory {instance_dir}
             user_function (callable): The function to execute, provided by the user.
         """
         driver, wait, By, EC = self.configure_selenium_with_tor(instance_num)
-
-        # Dynamically check and pass only the arguments that the function expects
+        urls_to_visit = user_function.__code__.co_consts
+        if self.cookies_manager:
+            for url in urls_to_visit:
+                if isinstance(url, str) and url.startswith("http"):
+                    self.cookies_manager_obj.manage_cookies(driver, instance_num, url)
         args = {}
         for name in user_function.__code__.co_varnames:
             if name == "driver":
@@ -193,12 +201,10 @@ DataDirectory {instance_dir}
                 args["instance_num"] = instance_num
             elif name == "log":
                 args["log"] = self.log
-
         try:
             user_function(**args)
         except TypeError as e:
             self.log(f"[-] Function error: {e}")
-
         driver.quit()
 
     def thread_manager(self, queue, user_function, check_stop_func=None):
@@ -221,10 +227,7 @@ DataDirectory {instance_dir}
             for attempt in range(5):
                 try:
                     self.execute_function(action_num, instance_num, user_function)
-
-                    # Ensure the IP is rotated after each action in each instance
                     self.rotate_tor_ip(instance_num)
-                    
                     break
                 except Exception as e:
                     self.log(f"[-] Action {action_num}, Instance {instance_num} - Exception: {e}. Rotating IP and retrying...")
@@ -247,16 +250,13 @@ DataDirectory {instance_dir}
             check_stop_func (callable, optional): A function to check if execution should stop.
         """
         self.clean_up()
-
         queue = Queue()
         for i in range(num_actions):
             queue.put(i)
-
         threads = []
         for _ in range(min(num_actions, self.max_threads)):
             t = threading.Thread(target=self.thread_manager, args=(queue, user_function, check_stop_func))
             t.start()
             threads.append(t)
-
         for t in threads:
             t.join()
