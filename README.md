@@ -53,8 +53,6 @@ For detailed examples on how to use Torsel, please refer to the [examples direct
 * [Detailed simple example (Single thread IP rotation)](https://github.com/azuk4r/torsel/blob/main/examples/simple_ip_rotation.py)
 * [Verify Tor IP rotation with multithreading](https://github.com/azuk4r/torsel/blob/main/examples/multithread_ip_rotation.py)
 * [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
-* [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
-* [Script to analyze the frequency of IP usage](https://github.com/azuk4r/torsel/blob/main/examples/tor_ip_usage_analyzer.py)
 * [Generate fresh cookies for each session (Single thread example)](https://github.com/azuk4r/torsel/blob/main/examples/cookies_gen_simple_example.py)
 * [Generate fresh cookies for each session with multithreading](https://github.com/azuk4r/torsel/blob/main/examples/cookies_gen_multithread_example.py)
   
