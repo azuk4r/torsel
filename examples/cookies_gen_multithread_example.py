@@ -30,6 +30,7 @@ def example_function(driver, wait, EC, By, action_num, instance_num):
     print(f"[+] Action {action_num} - Instance {instance_num} - Current IP: {ip_address}")
 
 # Configuring Torsel with 5 Tor instances and 5 concurrent threads
+# Configure Torsel with cookies_manager=True to enable automatic cookie handling.
 torsel = Torsel(total_instances=5, max_threads=5, headless=True, verbose=True, cookies_manager=True)
 
 # Running the example function across 5 actions
