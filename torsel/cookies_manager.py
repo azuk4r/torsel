@@ -1,21 +1,20 @@
 import os
 import json
-import shutil
 
 class CookiesManager:
     """
-    CookiesManager: A class to manage cookies for Selenium sessions.
+    CookiesManager: A class to handle loading cookies into a Selenium WebDriver instance.
 
-    This class provides functionality to clean up old cookies, save new cookies generated
-    during a browsing session, and manage the loading of custom cookies if provided.
+    This class manages cookies stored in JSON files, allowing them to be loaded
+    into a Selenium WebDriver session to maintain session state across different browser instances.
     """
 
     def __init__(self, base_dir='/tmp/torsel_cookies', verbose=False):
         """
-        Initializes the CookiesManager with the given parameters.
+        Initializes the CookiesManager object with the specified parameters.
 
         Args:
-            base_dir (str): Directory where cookies will be stored.
+            base_dir (str): The base directory where cookie files are stored.
             verbose (bool): If True, print logs to the console.
         """
         self.base_dir = base_dir
@@ -33,52 +32,35 @@ class CookiesManager:
         if self.verbose:
             print(message)
 
-    def clean_cookies(self):
+    def load_cookies(self, driver, cookie_file, initial_url):
         """
-        Cleans up old cookies by deleting the cookie storage directory and recreating it.
-        This ensures that no stale cookies remain from previous sessions.
-        """
-        self.log("[~] Cleaning old cookies...")
-        if os.path.exists(self.base_dir):
-            shutil.rmtree(self.base_dir)
-        os.makedirs(self.base_dir)
-        self.log("[+] Cookie cleanup done.")
+        Loads cookies from a specified JSON file into the Selenium WebDriver.
 
-    def save_cookies(self, driver, instance_num, url):
-        """
-        Saves the cookies from the current Selenium session to a JSON file.
+        This method navigates to the initial URL to ensure the domain matches, then loads the cookies from the JSON file.
+        If the cookie file exists, the cookies are added to the WebDriver session.
 
         Args:
-            driver (WebDriver): The Selenium WebDriver instance.
-            instance_num (int): The index of the Tor instance being used.
-            url (str): The URL for which cookies are being saved.
+            driver (WebDriver): The Selenium WebDriver instance where cookies will be loaded.
+            cookie_file (str): The name of the JSON file containing the cookies.
+            initial_url (str): The initial URL to ensure the correct domain for cookie loading.
 
-        The cookies are saved in a file named based on the instance number and the URL.
+        Raises:
+            Exception: If there is an error adding any of the cookies to the WebDriver.
         """
-        cookies = driver.get_cookies()
-        file_name = f'instance_{instance_num}_cookies_{url.replace("https://", "").replace(".", "_")}.json'
-        file_path = os.path.join(self.base_dir, file_name)
-        with open(file_path, 'w') as f:
-            json.dump(cookies, f)
-        self.log(f"[+] Cookies saved for instance {instance_num} ({url})")
-
-    def manage_cookies(self, driver, instance_num, url, custom_cookies=None):
-        """
-        Manages the loading and saving of cookies for a specific URL.
-
-        Args:
-            driver (WebDriver): The Selenium WebDriver instance.
-            instance_num (int): The index of the Tor instance being used.
-            url (str): The URL for which cookies are being managed.
-            custom_cookies (list, optional): A list of custom cookies to load before browsing.
-
-        If custom cookies are provided, they are loaded into the browser session.
-        Otherwise, the browser navigates to the URL, and the cookies generated during
-        the session are saved.
-        """
-        if custom_cookies:
-            for cookie in custom_cookies:
-                driver.add_cookie(cookie)
-            self.log(f"[+] Custom cookies loaded for instance {instance_num} ({url})")
-        driver.get(url)
-        self.save_cookies(driver, instance_num, url)
+        driver.get(initial_url)  # Ensure the domain matches the cookies
+        file_path = os.path.join(self.base_dir, cookie_file)
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                cookies = json.load(f)
+                for cookie in cookies:
+                    # Adjust the 'sameSite' attribute if necessary
+                    if 'sameSite' in cookie:
+                        if cookie['sameSite'] not in ["Strict", "Lax", "None"]:
+                            del cookie['sameSite']
+                    try:
+                        driver.add_cookie(cookie)
+                    except Exception as e:
+                        self.log(f"[-] Failed to add cookie: {e}")
+            self.log(f"[+] Cookies loaded from {cookie_file}")
+        else:
+            self.log(f"[-] Cookie file {cookie_file} not found.")
