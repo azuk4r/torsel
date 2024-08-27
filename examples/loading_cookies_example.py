@@ -4,9 +4,8 @@ from time import sleep
 # Declare the initial URL for the session (used to load the correct cookies)
 initial_url = "https://www.facebook.com"
 
-def fb_login():
-    print('[~] The driver is now automatically navigating to the initial_url to load cookies.')
-    sleep(5)
+def fb_login(): # There is no need to specify anything, as the first driver.get is handled automatically when declaring initial_url to load cookies. 
+    # In this simple example the cookies are loaded as a test, so it is not necessary to do anything else inside the main function.
     print('[+] Verified: Successfully logged into FB using loaded cookies.')
     sleep(15)
 
@@ -28,6 +27,5 @@ torsel.run(1, fb_login)
 # [+] Tor instance 0 created and running.
 # [~] Loading cookies from fb_cookies.json for instance 0
 # [+] Cookies loaded from fb_cookies.json
-# [~] The driver is now automatically navigating to the initial_url to load cookies.
 # [+] Verified: Successfully logged into FB using loaded cookies.
 # [+] IP rotated for Tor instance 0.
