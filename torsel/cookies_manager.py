@@ -1,5 +1,6 @@
 import os
 import json
+import time
 
 class CookiesManager:
     """
@@ -62,5 +63,6 @@ class CookiesManager:
                     except Exception as e:
                         self.log(f"[-] Failed to add cookie: {e}")
             self.log(f"[+] Cookies loaded from {cookie_file}")
+            time.sleep(5)
         else:
             self.log(f"[-] Cookie file {cookie_file} not found.")
