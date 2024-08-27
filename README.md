@@ -10,7 +10,7 @@
 ## Considerations
 - **Bypassing IP-Based Restrictions**: Torsel can help bypass some IP-based restrictions by rotating IP addresses through Tor nodes.
 - **Tor Exit Node Blocking**: Be aware that some websites actively block traffic from Tor exit nodes, which may limit the effectiveness of this approach.
-- **Cookie Loading Limitations**: Some sites may have restrictions that prevent successful cookie loading, which can impact session persistence through Tor.
+- **Cookie Loading Limitations**: Some sites may have restrictions that prevent successful cookie loading, loading cookies will not always work.
 
 ## Installation
 You can install Torsel directly from PyPI:
