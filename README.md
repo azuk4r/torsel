@@ -7,9 +7,10 @@
 - **Easy Configuration**: Automatically sets up, configures, and manages Tor instances.
 - **Integration with Selenium**: Run your Selenium scripts with the added anonymity of Tor.
 - **Flexible Cookie Management**: Load and manage custom cookies across multiple instances.  
-## Cybersecurity Considerations
+## Considerations
 - **Bypassing IP-Based Restrictions**: Torsel can help bypass some IP-based restrictions by rotating IP addresses through Tor nodes.
 - **Tor Exit Node Blocking**: Be aware that some websites actively block traffic from Tor exit nodes, which may limit the effectiveness of this approach.
+- **Cookie Loading Limitations**: Some sites may have restrictions that prevent successful cookie loading, which can impact session persistence through Tor.
 
 ## Installation
 You can install Torsel directly from PyPI:
