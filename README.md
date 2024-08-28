@@ -1,7 +1,7 @@
 # Torsel: Tor and Selenium Automation
 **Torsel** is a Python module designed to manage multiple Tor instances and automate web tasks using Selenium. It is particularly useful for web automation and web scraping tasks that require IP rotation to enhance anonymity.
 
-### Disclaimer
+## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
 
 ## Key Features
@@ -9,11 +9,12 @@ This project is currently under development and subject to ongoing updates and e
 - **Web Scraping and Automation**: Ideal for tasks that require anonymity.
 - **Easy Configuration**: Automatically sets up, configures, and manages Tor instances.
 - **Integration with Selenium**: Run your Selenium scripts with the added anonymity of Tor.
-- **Flexible Cookie Management**: Load and manage custom cookies across multiple instances.  
+- **Flexible and Advanced Cookie Management**: Load and manage custom cookies across multiple instances with support for both simple and advanced mapping configurations.
+
 ## Considerations
 - **Bypassing IP-Based Restrictions**: Torsel can help bypass some IP-based restrictions by rotating IP addresses through Tor nodes.
 - **Tor Exit Node Blocking**: Be aware that some websites actively block traffic from Tor exit nodes, which may limit the effectiveness of this approach.
-- **Flexible and Advanced Cookie Management**: Load and manage custom cookies across multiple instances with support for both simple and advanced mapping configurations.
+- **Cookie Loading Limitations**: Some sites may have restrictions that prevent successful cookie loading, loading cookies will not always work.
 
 ## Installation
 You can install Torsel directly from PyPI:
