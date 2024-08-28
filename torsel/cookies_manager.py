@@ -5,22 +5,21 @@ import time
 class CookiesManager:
     """
     CookiesManager: A class to handle loading cookies into a Selenium WebDriver instance.
-
-    This class manages cookies stored in JSON files, allowing them to be loaded
-    into a Selenium WebDriver session to maintain session state across different browser instances.
     """
 
-    def __init__(self, base_dir='/tmp/torsel_cookies', verbose=False):
+    def __init__(self, base_dir=None, verbose=False):
         """
         Initializes the CookiesManager object with the specified parameters.
 
         Args:
-            base_dir (str): The base directory where cookie files are stored.
+            base_dir (str): The base directory where cookie files are stored. If None, expects absolute paths.
             verbose (bool): If True, print logs to the console.
         """
         self.base_dir = base_dir
         self.verbose = verbose
-        if not os.path.exists(self.base_dir):
+        if self.base_dir and not os.path.isabs(self.base_dir):
+            raise ValueError("base_dir must be an absolute path.")
+        if self.base_dir and not os.path.exists(self.base_dir):
             os.makedirs(self.base_dir)
 
     def log(self, message):
@@ -37,9 +36,6 @@ class CookiesManager:
         """
         Loads cookies from a specified JSON file into the Selenium WebDriver.
 
-        This method navigates to the initial URL to ensure the domain matches, then loads the cookies from the JSON file.
-        If the cookie file exists, the cookies are added to the WebDriver session.
-
         Args:
             driver (WebDriver): The Selenium WebDriver instance where cookies will be loaded.
             cookie_file (str): The name of the JSON file containing the cookies.
@@ -48,21 +44,36 @@ class CookiesManager:
         Raises:
             Exception: If there is an error adding any of the cookies to the WebDriver.
         """
-        driver.get(initial_url)  # Ensure the domain matches the cookies
-        file_path = os.path.join(self.base_dir, cookie_file)
+        # Calculate the full path to the cookie file
+        if self.base_dir:
+            file_path = os.path.join(self.base_dir, cookie_file)
+        else:
+            file_path = cookie_file  # Expecting an absolute path
+
+        if not os.path.isabs(file_path):
+            raise ValueError("cookie_file path must be absolute.")
+
+        driver.get(initial_url)
+        self.log('[~] Trying to load cookies...')
+        time.sleep(5)
+
         if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                cookies = json.load(f)
-                for cookie in cookies:
-                    # Adjust the 'sameSite' attribute if necessary
-                    if 'sameSite' in cookie:
-                        if cookie['sameSite'] not in ["Strict", "Lax", "None"]:
-                            del cookie['sameSite']
-                    try:
-                        driver.add_cookie(cookie)
-                    except Exception as e:
-                        self.log(f"[-] Failed to add cookie: {e}")
-            self.log(f"[+] Cookies loaded from {cookie_file}")
-            time.sleep(5)
+            try:
+                with open(file_path, 'r') as file:
+                    cookies = json.load(file)
+                    for cookie in cookies:
+                        if 'sameSite' in cookie:
+                            if cookie['sameSite'] not in ["Strict", "Lax", "None"]:
+                                del cookie['sameSite']
+                        try:
+                            driver.add_cookie(cookie)
+                        except Exception as e:
+                            pass  # Silently handle the error without logging it
+                self.log(f"[+] Cookies loaded from {cookie_file}")
+                driver.refresh()  # Refresh to apply cookies
+                time.sleep(5)
+            except Exception as e:
+                self.log(f"[-] Error loading cookies from {file_path}: {e}")
         else:
             self.log(f"[-] Cookie file {cookie_file} not found.")
+

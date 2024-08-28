@@ -24,7 +24,7 @@ class Torsel:
     as well as configure Selenium WebDriver to use these instances for web automation.
     """
 
-    def __init__(self, total_instances=1, max_threads=1, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=False, verbose=False, cookies_dir=None):
+    def __init__(self, total_instances=1, max_threads=1, tor_base_port=9050, tor_control_base_port=9151, tor_path="/usr/bin/tor", tor_data_dir="/tmp/tor_profiles", headless=False, verbose=False, cookies_dir=None, cookies_mapping=None):
         """
         Initializes the Torsel object with the given parameters.
 
@@ -38,6 +38,7 @@ class Torsel:
             headless (bool): Run Selenium in headless mode if True.
             verbose (bool): If True, print logs to the console.
             cookies_dir (str): Directory to store and load cookies.
+            cookies_mapping (dict): Mapping of domains to specific cookie files based on instance number.
         """
         self.total_instances = total_instances
         self.max_threads = max_threads
@@ -48,7 +49,13 @@ class Torsel:
         self.headless = headless
         self.verbose = verbose
         self.cookies_dir = cookies_dir
-        self.cookies_manager = CookiesManager(base_dir=cookies_dir, verbose=verbose) if cookies_dir else None
+        self.cookies_mapping = cookies_mapping
+
+        # Initialize the CookiesManager if either cookies_dir or cookies_mapping is provided
+        if cookies_dir or cookies_mapping:
+            self.cookies_manager = CookiesManager(base_dir=cookies_dir, verbose=verbose)
+        else:
+            self.cookies_manager = None
 
     def log(self, message):
         """
@@ -168,9 +175,48 @@ DataDirectory {instance_dir}
             result = sock.connect_ex(('127.0.0.1', port))
             return result == 0
 
+    def load_cookies_for_url(self, driver, instance_num, current_url):
+        """
+        Load cookies for a specific URL based on the instance number.
+
+        This method loads cookies from the mapping or cookies directory based on the current URL and instance number.
+        It also ensures the cookies are correctly applied by refreshing the page after loading.
+
+        Args:
+            driver (WebDriver): The Selenium WebDriver instance where cookies will be loaded.
+            instance_num (int): The index of the Tor instance.
+            current_url (str): The current URL being accessed by the WebDriver.
+        """
+        if self.cookies_mapping:
+            for domain, cookies in self.cookies_mapping.items():
+                if domain in current_url:
+                    cookie_file = cookies.get(str(instance_num % len(cookies)))
+
+                    # Convert relative paths to absolute paths if necessary
+                    if not os.path.isabs(cookie_file):
+                        if self.cookies_dir:
+                            cookie_file = os.path.join(self.cookies_dir, cookie_file)
+                        else:
+                            raise ValueError("cookie_file path must be absolute.")
+
+                    if cookie_file:
+                        self.cookies_manager.load_cookies(driver, cookie_file, current_url)
+                        driver.refresh()
+                    break
+        elif self.cookies_manager:
+            cookie_files = os.listdir(self.cookies_manager.base_dir)
+            if cookie_files:
+                cookie_file = cookie_files[instance_num % len(cookie_files)]
+                if current_url and driver.current_url.startswith('http'):
+                    self.cookies_manager.load_cookies(driver, cookie_file, current_url)
+                    driver.refresh()
+
     def execute_function(self, action_num, instance_num, user_function):
         """
         Executes the user-provided function with the specified Tor instance.
+
+        This method handles the Selenium WebDriver setup, including configuring it with the appropriate
+        Tor instance and user agent, as well as loading cookies if specified.
 
         Args:
             action_num (int): The action number being performed.
@@ -179,25 +225,6 @@ DataDirectory {instance_dir}
         """
         driver, wait, By, EC = self.configure_selenium_with_tor(instance_num)
 
-        # Load cookies if a cookies directory is specified
-        if self.cookies_manager:
-            cookie_files = os.listdir(self.cookies_manager.base_dir)
-            if cookie_files and len(cookie_files) > instance_num:
-                try:
-                    cookie_file = cookie_files[instance_num % len(cookie_files)]
-                    self.log(f"[~] Loading cookies from {cookie_file} for instance {instance_num}")
-                    initial_url = user_function.__globals__['initial_url']
-                    self.cookies_manager.load_cookies(driver, cookie_file, initial_url)
-                except KeyError as e:
-                    self.log(f"[-] Failed to find initial URL: {e}")
-                    driver.quit()
-                    return
-                except Exception as e:
-                    self.log(f"[-] Failed to load cookies for instance {instance_num}: {e}")
-                    driver.quit()
-                    return
-
-        # Prepare arguments for the user function
         args = {}
         for name in user_function.__code__.co_varnames:
             if name == "driver":
@@ -225,6 +252,9 @@ DataDirectory {instance_dir}
     def thread_manager(self, queue, user_function, check_stop_func=None):
         """
         Manages the execution of threads, ensuring that actions are processed concurrently.
+
+        This method creates Tor instances as needed and executes the user-defined function in separate threads.
+        It also manages retries in case of errors and ensures IP rotation between actions.
 
         Args:
             queue (Queue): The queue containing action numbers.
@@ -258,6 +288,9 @@ DataDirectory {instance_dir}
     def run(self, num_actions, user_function, check_stop_func=None):
         """
         Runs the specified number of actions concurrently across the available Tor instances.
+
+        This method is the main entry point for executing tasks across multiple Tor instances. It handles
+        the initialization, threading, and cleanup process to ensure smooth operation.
 
         Args:
             num_actions (int): The number of actions to perform.
