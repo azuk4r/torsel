@@ -3,7 +3,7 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
-Currently it is designedfor Linux, the Windows adaptation is being prepared in a separate pvt project, if you wanna collab, see [Contributing](#contributing) 👇
+Currently it is designedfor Linux, the Windows port is being prepared in a separate pvt project, if you wanna collab, see [Contributing](#contributing) 👇
 
 ## Key Features
 - **Automated IP Rotation**: Seamlessly rotate IP addresses using multiple Tor instances.
@@ -86,7 +86,7 @@ Additionally, within the Selenium-related configurations, Torsel automatically h
 * **log**: A logging function provided by Torsel to output messages during execution.
 
 ## Contributing
-Any kind of contribution is welcome. I am preparing the Windows adaptation separately before merging it into the main project. If anyone wants to fork the project for a MacOS port, please send a PR!
+Hey! 👋 Any kind of contribution is welcome. I'm preparing the Windows port separately before merging it into the main project. If anyone wants to fork the project for a MacOS port, please send a PR!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.
