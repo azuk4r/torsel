@@ -3,7 +3,7 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
-**Note:** Currently it is designed only for Linux, the Windows adaptation is being prepared in a separate private project.
+Currently it is designedfor Linux, the Windows adaptation is being prepared in a separate pvt project, if you wanna collab, see [Contributing](#contributing) 👇
 
 ## Key Features
 - **Automated IP Rotation**: Seamlessly rotate IP addresses using multiple Tor instances.
