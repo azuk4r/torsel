@@ -3,6 +3,7 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
+**Note:** Currently it is designed only for Linux, the Windows adaptation is being prepared in a separate private project.
 
 ## Key Features
 - **Automated IP Rotation**: Seamlessly rotate IP addresses using multiple Tor instances.
@@ -84,13 +85,8 @@ Additionally, within the Selenium-related configurations, Torsel automatically h
 * **instance_num**: The instance number of the Tor connection in use, passed automatically to your function.
 * **log**: A logging function provided by Torsel to output messages during execution.
 
-## System Requirements
-* **Operating System:** Development and testing conducted on WSL Kali Linux, but it may work on other Linux distributions.
-* **Python Version:** Python 3.8 or higher.
-* **Dependencies:** Selenium, Stem (for managing Tor).
-
 ## Contributing
-Contributions are welcome! If you have suggestions or improvements, please feel free to submit a pull request or open an issue on GitHub.
+Any kind of contribution is welcome. I am preparing the Windows adaptation separately before merging it into the main project. If anyone wants to fork the project for a MacOS port, please send a PR!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.
