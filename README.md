@@ -30,7 +30,6 @@ You need to have Tor installed to invoke the path pointing to the executable ins
 ```
 sudo apt install chromium
 ```
-You need to run it with elevated permissions to be able to configure the instances, remember to use sudo or run as administrator if you are on Windows.
 
 ## Usage
 ### Simple example
