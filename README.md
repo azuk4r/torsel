@@ -71,6 +71,7 @@ Torsel is highly configurable to suit various use cases:
 * **tor_control_base_port:** Starting port for Tor control connections.
 * **tor_path**: Path to the Tor executable.
 * **tor_data_dir**: Directory to store Tor profile data.
+* **user_agent**: Specifies the user_agent, if None a random one is selected.
 * **headless**: Run Selenium in headless mode if `True`.
 * **verbose**: Enable detailed logging if `True`.
 * **cookies_dir**: Directory to store and load cookies (optional).
