@@ -3,9 +3,10 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
-Currently it is designedfor Linux, the Windows port is being prepared in a separate pvt project, if you wanna collab, see [Contributing](#contributing) 👇
+It hasn't been tested on MacOS, I welcome feedback and if you wanna collab, see [Contributing](#contributing) 👇
 
 ## Key Features
+- **Cross-Platform Support**: Compatible with Linux, Windows and macOS.
 - **Automated IP Rotation**: Seamlessly rotate IP addresses using multiple Tor instances.
 - **Web Scraping and Automation**: Ideal for tasks that require anonymity.
 - **Easy Configuration**: Automatically sets up, configures, and manages Tor instances.
@@ -19,22 +20,19 @@ Currently it is designedfor Linux, the Windows port is being prepared in a separ
 
 ## Installation
 You can install Torsel directly from PyPI:
-
 ```
 pip install torsel
 ```
 
 ## Prerequisites
 
-Ensure your machine has the required packages installed by running the following command:
+You need to have Tor installed to invoke the path pointing to the executable inside the Torsel object. On Linux machines make sure you have chromium installed with the following command:
 ```
-sudo apt install tor chromium psmisc
+sudo apt install chromium
 ```
-
-This command installs **Tor**, **Chromium**, and **psmisc** (required for the `killall` command).
+You need to run it with elevated permissions to be able to configure the instances, remember to use sudo or run as administrator if you are on Windows.
 
 ## Usage
-
 ### Simple example
 This simple example scrapes the IP address 10 times, demonstrating IP rotation using Tor:
 ```python
@@ -47,8 +45,10 @@ def collect_ip(driver, wait, EC, By):
     ip_address = driver.find_element(By.TAG_NAME, "body").text.strip()
     print(f"[+] Current Tor IP: {ip_address}")
 
-# Invoke Torsel in headless mode and run
-torsel = Torsel(headless=True)
+# Torsel object
+torsel = Torsel(headless=True, # Invoke Torsel in headless mode and run
+                tor_path="/usr/bin/tor", # path to executable
+                tor_data_dir="/tmp/tor_profiles") # tor profiles path dest
 torsel.run(10, collect_ip)
 ```
 
@@ -86,7 +86,7 @@ Additionally, within the Selenium-related configurations, Torsel automatically h
 * **log**: A logging function provided by Torsel to output messages during execution.
 
 ## Contributing
-Hey! 👋 Any kind of contribution is welcome. I'm preparing the Windows port separately before merging it into the main project. If anyone wants to fork the project for a MacOS port, please send a PR!
+Hey! 👋 Any kind of contribution is welcome. Send PR if you have improvements or examples of use to contribute!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.
