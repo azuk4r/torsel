@@ -26,10 +26,14 @@ pip install torsel
 
 ## Prerequisites
 
-You need to have Tor installed to invoke the path pointing to the executable inside the Torsel object. On Linux machines make sure you have chromium installed with the following command:
+### Linux
+On Linux machines make sure you have tor and chromium installed with the following command:
 ```
-sudo apt install chromium
+sudo apt install tor chromium
 ```
+
+### Windows
+You need to have the Tor binary available to invoke the path pointing to it inside the Torsel object.<br>[Here](https://www.torproject.org/download/tor/) you can download the expert bundle with the Tor binaries.
 
 ## Usage
 ### Simple example
