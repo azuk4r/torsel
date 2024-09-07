@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from socket import socket, AF_INET, SOCK_STREAM
 from selenium.webdriver.common.by import By
-from cookies_manager import CookiesManager
+from .cookies_manager import CookiesManager
 from os.path import join, abspath, exists
 from subprocess import Popen, DEVNULL
 from selenium.webdriver import Chrome
