@@ -3,7 +3,7 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
-It hasn't been tested on MacOS, I welcome feedback and if you wanna collab, see [Contributing](#contributing) 👇
+It hasn’t been tested on macOS, so any feedback is welcome! If you're interested in collaborating, check out the [Contributing](#contributing) section below 👇
 
 ## Key Features
 - **Cross-Platform Support**: Compatible with Linux, Windows and macOS.
