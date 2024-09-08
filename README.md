@@ -3,7 +3,7 @@
 
 ## Disclaimer
 This project is currently under development and subject to ongoing updates and enhancements. Please note that features and functionality may change as the project evolves.
-It hasn’t been tested on macOS, so any feedback is welcome! If you're interested in collaborating, check out the [Contributing](#contributing) section below 👇
+It hasn't been tested on macOS, so any feedback is welcome! If you're interested in collaborating, check out the [Contributing](#contributing) section below <g-emoji alias="point_down" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f447.png" ios-version="6.0">👇</g-emoji>
 
 ## Key Features
 - **Cross-Platform Support**: Compatible with Linux, Windows and macOS.
@@ -90,7 +90,7 @@ Additionally, within the Selenium-related configurations, Torsel automatically h
 * **log**: A logging function provided by Torsel to output messages during execution.
 
 ## Contributing
-Hey! 👋 Any kind of contribution is welcome. Send PR if you have improvements or examples of use to contribute!
+Hey! <g-emoji alias="wave" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f44b.png" ios-version="6.0">👋</g-emoji> Any kind of contribution is welcome. Send PR if you have improvements or examples of use to contribute!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.
