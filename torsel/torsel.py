@@ -234,11 +234,6 @@ class Torsel:
 			self.cookies_manager.load_cookies(driver, self.cookies_dir, current_url)
 
 	def execute_function(self, action_num, instance_num, user_function):
-		'''Executes the user-provided function with the specified Tor instance.
-		Args:
-			action_num (int): The action number being performed.
-			instance_num (int): The index of the Tor instance.
-			user_function (callable): The function to execute, provided by the user.'''
 		max_retries = 3
 		for attempt in range(max_retries):
 			try:
@@ -253,6 +248,8 @@ class Torsel:
 						args['By'] = By
 					elif param == 'EC':
 						args['EC'] = EC
+					elif param == 'action_num':
+						args['action_num'] = action_num
 					elif param == 'instance_num':
 						args['instance_num'] = instance_num
 					elif param == 'log':

@@ -51,7 +51,7 @@ class CookiesManager:
 				self.log(f'[+] Cookies loaded from {file_path}')
 				driver.refresh()  # Refresh to apply cookies
 				sleep(5)
-			except Exception as e:
+			except Exception:
 				pass
 		else:
 			self.log(f'[-] Cookie file {file_path} not found.')
