@@ -90,7 +90,7 @@ Additionally, within the Selenium-related configurations, Torsel automatically h
 * **log**: A logging function provided by Torsel to output messages during execution.
 
 ## Contributing
-Hey! <img src="https://images.emojiterra.com/google/noto-emoji/unicode-15.1/color/svg/1f44b.svg" alt="emoji pointing down" width="20"/> Any kind of contribution is welcome. Send PR if you have improvements or examples of use to contribute!
+Hey! <img src="https://images.emojiterra.com/google/noto-emoji/unicode-15.1/color/svg/1f44b.svg" alt="emoji waving hand" width="20"/> Any kind of contribution is welcome. Send PR if you have improvements or examples of use to contribute!
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/azuk4r/torsel/blob/main/LICENSE) file for details.

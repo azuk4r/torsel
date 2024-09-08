@@ -2,5 +2,5 @@
 from .torsel import Torsel
 from .cookies_manager import CookiesManager
 __all__ = ['Torsel', 'CookiesManager']
-__version__ = '0.4.22'
+__version__ = '0.4.31'
 # by azuk4r
