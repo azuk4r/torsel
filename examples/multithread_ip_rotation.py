@@ -1,24 +1,18 @@
-"""
-Example: Verifying IP rotation using Tor with the Torsel module.
-
+'''Example: Verifying IP rotation using Tor with the Torsel module.
 This script demonstrates how to use the Torsel module to create multiple Tor instances
 and verify that the IP address changes for each instance using Selenium.
-
 Important:
 - The `collect_ip` function is passed to Torsel and automatically executed for each Tor instance.
 - The `driver` is managed internally by Torsel. You do not need to instantiate or manage it.
 - The `wait`, `EC`, and `By` parameters are pre-imported and configured by Torsel to simplify interactions with Selenium.
 - Both `action_num` and `instance_num` are passed to the function to indicate the specific action and instance being used.
 - The `log` function is provided by Torsel for internal logging; you can use it for conditional logging within your function.
-- The `max_retries` parameter is used to define how many attempts should be made to retrieve the IP address if the initial attempts fail.
-"""
-
+- The `max_retries` parameter is used to define how many attempts should be made to retrieve the IP address if the initial attempts fail.'''
 from torsel import Torsel
 
 def collect_ip(driver, wait, EC, By, action_num, instance_num, log, max_retries=5):
-    """
+    '''
     Collect the IP address using a Tor instance managed by Torsel.
-
     Args:
         driver: Selenium WebDriver instance, passed automatically by Torsel.
         wait: WebDriverWait instance for handling explicit waits.
@@ -28,42 +22,36 @@ def collect_ip(driver, wait, EC, By, action_num, instance_num, log, max_retries=
         instance_num: The index of the Tor instance being used.
         log: The log function to use for logging messages.
         max_retries: Maximum number of retries if IP retrieval fails (default is 5).
-
     Notes:
     - The `driver` is pre-configured with the Tor proxy for the given instance.
-    - Torsel manages the WebDriver lifecycle, so no need to initialize or close it manually.
-    """
+    - Torsel manages the WebDriver lifecycle, so no need to initialize or close it manually.'''
     attempts = 0
     ip_address = None
-
     while attempts < max_retries:
         try:
-            driver.get("http://icanhazip.com")
-            wait.until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), "."))
-            ip_address = driver.find_element(By.TAG_NAME, "body").text.strip()
+            driver.get('http://icanhazip.com')
+            wait.until(EC.text_to_be_present_in_element((By.TAG_NAME, 'body'), '.'))
+            ip_address = driver.find_element(By.TAG_NAME, 'body').text.strip()
             break
         except Exception as e:
             attempts += 1
-
-    print(f"[+] Action {action_num}, Instance {instance_num}, Current Tor IP: {ip_address}")
-
+    print(f'[+] Action {action_num}, Instance {instance_num}, Current Tor IP: {ip_address}')
     if ip_address is None:
         # This log will not be displayed unless verbose logging is enabled
-        log(f"[-] Action {action_num}, Instance {instance_num} - Unable to retrieve IP after {max_retries} attempts.")
-
+        log(f'[-] Action {action_num}, Instance {instance_num} - Unable to retrieve IP after {max_retries} attempts.')
 # Configure Torsel
 torsel = Torsel(
     total_instances=30,       # Number of Tor instances to create
     max_threads=15,           # Max concurrent threads allowed
+    tor_path='C:/Tor/tor/tor.exe', # windows test
+    tor_data_dir='C:/tor_profiles', # windows test
     headless=True,            # Run Selenium in headless mode
     verbose=False             # If set to True, detailed logs will be shown
 )
-
 # Run the IP collection across multiple Tor instances
 # 100: Number of actions to perform (100 IP retrievals)
 # collect_ip: Function to execute for each action
 torsel.run(100, collect_ip)
-
 # Results:
 # [+] Action 6, Instance 6, Current Tor IP: 185.220.101.16
 # [+] Action 12, Instance 12, Current Tor IP: 192.42.116.208
@@ -165,3 +153,4 @@ torsel.run(100, collect_ip)
 # [+] Action 97, Instance 7, Current Tor IP: 185.220.101.1
 # [+] Action 98, Instance 8, Current Tor IP: 109.70.100.3
 # [+] Action 99, Instance 9, Current Tor IP: 107.189.8.65
+# by azuk4r
