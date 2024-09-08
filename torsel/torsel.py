@@ -2,19 +2,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from os.path import join, abspath, exists, isabs
 from socket import socket, AF_INET, SOCK_STREAM
 from selenium.webdriver.common.by import By
-from .cookies_manager import CookiesManager
-from os.path import join, abspath, exists
+from cookies_manager import CookiesManager
 from subprocess import Popen, DEVNULL
 from selenium.webdriver import Chrome
 from stem.control import Controller
+from os import makedirs, listdir
 from threading import Thread
 from shutil import rmtree
 from random import choice
 from queue import Queue
 from stem import Signal
-from os import makedirs
 from time import sleep
 from psutil import (
 	process_iter, 
@@ -70,7 +70,7 @@ class Torsel:
 		self.tor_processes = {}
 		# Initialize the CookiesManager if either cookies_dir or cookies_mapping is provided
 		if cookies_dir or cookies_mapping:
-			self.cookies_manager = CookiesManager(base_dir=self.cookies_dir, verbose=verbose)
+			self.cookies_manager = CookiesManager(base_dir=cookies_dir, verbose=verbose)
 		else:
 			self.cookies_manager = None
 
@@ -214,6 +214,24 @@ class Torsel:
 		with socket(AF_INET, SOCK_STREAM) as sock:
 			result = sock.connect_ex(('127.0.0.1', port))
 			return result == 0
+		
+	def load_cookies_for_url(self, driver, instance_num, current_url):
+		'''Load cookies for a specific URL based on the instance number.
+		This method loads cookies from the mapping based on the current URL and instance number.
+		It also ensures the cookies are correctly applied by refreshing the page after loading.
+		Args:
+			driver (WebDriver): The Selenium WebDriver instance where cookies will be loaded.
+			instance_num (int): The index of the Tor instance.
+			current_url (str): The current URL being accessed by the WebDriver.'''
+		if self.cookies_mapping:
+			for domain, cookies in self.cookies_mapping.items():
+				if domain in current_url:
+					cookie_file = cookies.get(str(instance_num % len(cookies)))
+					if cookie_file:
+						self.cookies_manager.load_cookies(driver, cookie_file, current_url)
+					break
+		elif self.cookies_dir:
+			self.cookies_manager.load_cookies(driver, self.cookies_dir, current_url)
 
 	def execute_function(self, action_num, instance_num, user_function):
 		'''Executes the user-provided function with the specified Tor instance.
@@ -226,20 +244,18 @@ class Torsel:
 			try:
 				driver, wait, By, EC = self.configure_selenium_with_tor(instance_num)
 				args = {}
-				for name in user_function.__code__.co_varnames:
-					if name == 'driver':
+				for param in user_function.__code__.co_varnames[:user_function.__code__.co_argcount]:
+					if param == 'driver':
 						args['driver'] = driver
-					elif name == 'wait':
+					elif param == 'wait':
 						args['wait'] = wait
-					elif name == 'By':
+					elif param == 'By':
 						args['By'] = By
-					elif name == 'EC':
+					elif param == 'EC':
 						args['EC'] = EC
-					elif name == 'action_num':
-						args['action_num'] = action_num
-					elif name == 'instance_num':
+					elif param == 'instance_num':
 						args['instance_num'] = instance_num
-					elif name == 'log':
+					elif param == 'log':
 						args['log'] = self.log
 				user_function(**args)
 				break
