@@ -4,22 +4,22 @@ from time import sleep
 torsel = Torsel(
     total_instances=3,
     max_threads=3,
+    tor_path='C:/Tor/tor/tor.exe', # windows test
+    tor_data_dir='C:/tor_profiles', # windows test
     headless=False,
     verbose=True,
-    cookies_dir='/path/to/cookies_github'
+    cookies_dir=r'C:\path\to\cookies.json'
 )
 
 def loading_cookies(driver, wait, By, EC, instance_num):
-    driver.get("https://www.github.com")
-    torsel.load_cookies_for_url(driver, instance_num, "https://www.github.com")
-    wait.until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Dashboard')]")))
+    driver.get('https://www.github.com')
+    torsel.load_cookies_for_url(driver, instance_num, 'https://www.github.com')
+    wait.until(EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Dashboard")]')))
     print('[+] Verified: Github cookies load correctly executed.')
-    sleep(60)
+    sleep(10)
 
 torsel.run(3, loading_cookies)
-
 # Results:
-
 # [~] Cleaning up previous processes, files, and ports...
 # [+] Cleanup completed.
 # [~] Creating Tor instance 0...
@@ -40,3 +40,4 @@ torsel.run(3, loading_cookies)
 # [+] IP rotated for Tor instance 2.
 # [+] IP rotated for Tor instance 1.
 # [+] IP rotated for Tor instance 0.
+# by azuk4r

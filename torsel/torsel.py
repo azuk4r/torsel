@@ -5,14 +5,14 @@ from selenium.webdriver.chrome.service import Service
 from os.path import join, abspath, exists, isabs
 from socket import socket, AF_INET, SOCK_STREAM
 from selenium.webdriver.common.by import By
-from cookies_manager import CookiesManager
+from .cookies_manager import CookiesManager
 from subprocess import Popen, DEVNULL
 from selenium.webdriver import Chrome
 from stem.control import Controller
-from os import makedirs, listdir
 from threading import Thread
 from shutil import rmtree
 from random import choice
+from os import makedirs
 from queue import Queue
 from stem import Signal
 from time import sleep
